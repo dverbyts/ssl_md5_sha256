@@ -14,6 +14,8 @@
 # define FT_SSL_H
 # include <fcntl.h>
 # include "libft/libft.h"
+# include "sha256.h"
+# include "md5.h"
 
 /*
 ** ••• bool flag format: •••
@@ -32,6 +34,9 @@ typedef	struct	s_ssl
 	int		f_r;
 	int		f_s;
 	int		input_len;
+	int		l;
+	void	(*wich_algo)(t_ssl *ssl);
+	char	*algo_name;
 	char	*input;
 	char	*output;
 

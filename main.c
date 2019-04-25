@@ -22,8 +22,19 @@ t_ssl	init_struct(int algo)
 	ssl->f_q = 0;
 	ssl->f_r = 0;
 	ssl->f_s = 0;
+	ssl->l = 1;
 	ssl->input = NULL;
 	ssl->output = NULL;
+	if (algo == 1)
+	{
+		ssl->algo_name = "MD5";
+		ssl->wich_algo = &ft_md5;
+	}
+	else if (algo == 2)
+	{
+		ssl->algo_name = "SHA256";
+		ssl->wich_algo = &ft_sha256;
+	}
 	return (ssl);
 }
 
