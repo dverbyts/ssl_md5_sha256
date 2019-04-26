@@ -12,7 +12,7 @@
 
 #include "ssl.h"
 
-void	read_file(int fd, t_ssl *ssl)
+void	parsing_read_file(int fd, t_ssl *ssl)
 {
 	char tmp[100];
 	char *buf;
@@ -27,59 +27,60 @@ void	read_file(int fd, t_ssl *ssl)
 	}
 }
 
-void	open_file(int argc, char **argv, t_ssl *ssl, int fd)
+int		parsing_open_file(int argc, char **argv, t_ssl *ssl, int fd)
 {
 	if (ssl->l == (argc - 1))
 	{
 		ssl->input = "";
 		ssl->f_str = 1;
-		return ;
+		return (0);
 	}
 	if ((fd = open(argv[ssl->l], O_RDONLY)) < 0)
-		return (error(2, "File name error. Can't find file."));
+		return (ft_error(2, "File name error. Can't find file."));
 	if (fd > 0)
 	{
-		read_file(fd), ssl;
+		parsing_read_file(fd, ssl);
 		ssl->file_name = argv[ssl->l];
 		ssl->f_str = 1;
 		close(fd);
-		return ;
+		return (0);
 	}
 	ssl->input = "";
 	ssl->f_str = 1;
+	return (0);
 }
 
 void	parsing_flag(t_ssl *ssl, int argc, char **argv, int i)
 {
 	while (argv[ssl->l][++i])
 	{
-		if (ft_strcmp(argv[ssl->l][i], "p") == 0)
-			ssl->f_p == 1 ? error(3, argv[ssl->l]) : ssl->f_p = 1;
-		else if (ft_strcmp(argv[ssl->l][i], "q") == 0)
-			ssl->f_q == 1 ? error(3, argv[ssl->l]) : ssl->f_q = 1;
-		else if (ft_strcmp(argv[ssl->l][i], "r") == 0)
-			ssl->f_r == 1 ? error(3, argv[ssl->l]) : ssl->f_r = 1;
-		else if (ft_strcmp(argv[ssl->l][i], "s") == 0)
+		if (ft_strcmp(&argv[ssl->l][i], "p") == 0)
+			(ssl->f_p == 1) ? (ft_error(3, argv[ssl->l])) : (ssl->f_p = 1);
+		else if (ft_strcmp(&argv[ssl->l][i], "q") == 0)
+			(ssl->f_q == 1) ? (ft_error(3, argv[ssl->l])) : (ssl->f_q = 1);
+		else if (ft_strcmp(&argv[ssl->l][i], "r") == 0)
+			(ssl->f_r == 1) ? (ft_error(3, argv[ssl->l])) : (ssl->f_r = 1);
+		else if (ft_strcmp(&argv[ssl->l][i], "s") == 0)
 		{
-			ssl->f_s == 1 ? error(3, argv[ssl->l]) : ssl->f_s = 1;
-			if (argv[ssl->l][i + 1] == "\0")
-				(ssl->l < (argc - 1)) ? ssl->input = argv[++ssl->l] :
-										ssl->input = "";
+			(ssl->f_s == 1) ? (ft_error(3, argv[ssl->l])) : (ssl->f_s = 1);
+			if (ft_strcmp(&argv[ssl->l][i + 1], "\0") == 0)
+				(ssl->l < (argc - 1)) ? (ssl->input = argv[++ssl->l]) :
+				(ssl->input = "");
 			else
 				ssl->input = &argv[ssl->l][i + 1];
 			ssl->f_str = 1;
 			return ;
 		}
 		else
-			error(3, argv[ssl->l]);
+			ft_error(3, argv[ssl->l]);
 	}
 }
 
-int		parsing_input(int algo, int argc, char **argv, t_ssl *ssl)
+int		parsing_input(int argc, char **argv, t_ssl *ssl)
 {
 	while (++ssl->l < argc)
 	{
-		if (argv[ssl->l][0] == "-")
+		if (ft_strcmp(&argv[ssl->l][0], "-") == 0)
 			parsing_flag(ssl, argc, argv, 0);
 		else if (ssl->f_s == 1)
 		{
@@ -88,15 +89,15 @@ int		parsing_input(int algo, int argc, char **argv, t_ssl *ssl)
 			ssl->f_s = 0;
 		}
 		else if (ssl->f_s == 0)
-			open_file(argc, argc, ssl, 0);
+			parsing_open_file(argc, argv, ssl, 0);
 		if (ssl->f_str == 1)
 		{
-			if (ssl->f_r != 1)
-				print_algo_name(ssl);
+//			if (ssl->f_r != 1)
+//				print_algo_name(ssl);
 			ssl->run_algo(ssl);
-			print_ssl();
-			if (ssl->f_r == 1)
-				print_algo_name(ssl);
+//			print_ssl();
+//			if (ssl->f_r == 1)
+//				print_algo_name(ssl);
 			ssl->f_str = 0;
 		}	
 	}

@@ -10,11 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_SSL_H
-# define FT_SSL_H
+#ifndef SSL_H
+# define SSL_H
 # include <fcntl.h>
+# include <stdint.h>
 # include "libft/libft.h"
-# include "sha256.h"
+//# include "sha256.h"
 # include "md5.h"
 
 /*
@@ -35,21 +36,16 @@ typedef	struct	s_ssl
 	int		f_s;
 	size_t	input_len;
 	int		l;
-	void	(*run_algo)(t_ssl *ssl);
+	void	(*run_algo)(void *ssl);
 	char	*algo_name;
 	char	*file_name;
 	char	*input;
-	char	output[2000];
-
-
-	void	*ssl_struct;
-	void	*(*ssl_init)(char *input, size_t len);
-	void	(*ssl_func)(void *ssl);
-	char	*file_name;
-	char	*func_name;
+	char	*output;
 }				t_ssl;
 
-int	parsing_input(int algo, int argc, char **argv, t_ssl *ssl);
-int	parsing_flag(t_ssl *ssl, char *flag)
+int		parsing_input(int argc, char **argv, t_ssl *ssl);
+void	ft_md5(void *in);
+void	ft_sha256(void *in);
+int		ft_error(int ft_error_code, char *msg);
 
 #endif

@@ -18,7 +18,7 @@ t_md5	*init_md5(t_ssl *ssl)
 
 	if (!(md5 = (t_md5 *)malloc(sizeof(t_md5))))
 	{
-		error(2, "Malloc error. Sustem dom't give memory");
+		ft_error(2, "Malloc error. Sustem dom't give memory");
 		return (NULL);
 	}
 	ft_bzero(md5, sizeof(t_md5));
@@ -33,7 +33,7 @@ t_md5	*init_md5(t_ssl *ssl)
 	return (md5);
 }
 
-void	do_algo(uint32_t buf, t_md5 *md5, uint32_t x, uint32_t y)
+void	do_algo(uint32_t *buf, t_md5 *md5, uint32_t x, uint32_t y)
 {
 	int			i;
 	uint32_t	tmp;
@@ -106,12 +106,14 @@ void	print_md5(t_md5 *md5, t_ssl *ssl)
 	print_md5_2(md5, ssl);
 }
 
-void	ft_md5(t_ssl *ssl)
+void	ft_md5(void *in)
 {
-	uint32_t	buf;
+	uint32_t	*buf;
 	int			move;
 	t_md5		*md5;
+	t_ssl		*ssl;
 
+	ssl = (t_ssl *)in;
 	move = 0;
 	if (!(md5 = init_md5(ssl)))
 		return ;
@@ -132,5 +134,4 @@ void	ft_md5(t_ssl *ssl)
 	print_md5(md5, ssl);
 	if (md5)
 		free(md5);
-	return ;
 }

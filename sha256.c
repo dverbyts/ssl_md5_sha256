@@ -58,7 +58,7 @@ t_sha256	*init_sha256(t_ssl *ssl)
 
 	if (!(sha256 = (sha256 *)malloc(sizeof(sha256))))
 	{
-		error(2, "Malloc error. Sustem dom't give memory");
+		ft_error(2, "Malloc error. Sustem dom't give memory");
 		return (NULL);
 	}
 	ft_bzero(sha256, sizeof(sha256));
@@ -67,12 +67,14 @@ t_sha256	*init_sha256(t_ssl *ssl)
 }
 
 
-void	ft_sha256(t_ssl *ssl)
+void	ft_sha256(void *in)
 {
 	uint32_t	buf;
 	int			move;
 	t_sha256	*sha256;
+	t_ssl		*ssl;
 
+	ssl = (t_ssl *)in;
 	move = 0;
 	if (!(sha256 = init_256(ssl)))
 		return ;
