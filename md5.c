@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "md5.h"
+#include "ssl.h"
 
-t_md5	init_md5(void)
+t_md5	*init_md5(t_ssl *ssl)
 {
 	t_md5 *md5;
 
@@ -21,14 +21,16 @@ t_md5	init_md5(void)
 		error(2, "Malloc error. Sustem dom't give memory");
 		return (NULL);
 	}
+	ft_bzero(md5, sizeof(t_md5));
+	ssl->input_len = (ft_strlen(ssl->input) * 8 + 1);
+	while (ssl->input_len % 512 != 448)
+		ssl->input_len++;
+	ssl->input_len = ssl->input_len / 8;
 	md5->a = 0x67452301;
 	md5->b = 0xefcdab89;
 	md5->c = 0x98badcfe;
 	md5->d = 0x10325476;
-	md5->aa = 0;
-	md5->bb = 0;
-	md5->cc = 0;
-	md5->dd = 0;
+	return (md5);
 }
 
 void	do_algo(uint32_t buf, t_md5 *md5, uint32_t x, uint32_t y)
@@ -66,7 +68,7 @@ void	print_md5_2(t_md5 *md5, t_ssl *ssl)
 	while (4 > i++)
 	{
 		print = ft_itoa_base(str[i], 16);
-		ssl->output = ft_strjoin(ssl->output, print);
+		ssl->output = ft_strcat(ssl->output, print);
 		ft_strdel(&print);
 	}
 	i = 0;
@@ -74,7 +76,7 @@ void	print_md5_2(t_md5 *md5, t_ssl *ssl)
 	while (4 > i++)
 	{
 		print = ft_itoa_base(str[i], 16);
-		ssl->output = ft_strjoin(ssl->output, print);
+		ssl->output = ft_strcat(ssl->output, print);
 		ft_strdel(&print);
 	}
 }
@@ -90,7 +92,7 @@ void	print_md5(t_md5 *md5, t_ssl *ssl)
 	while (4 > i++)
 	{
 		print = ft_itoa_base(str[i], 16);
-		ssl->output = ft_strjoin(ssl->output, print);
+		ssl->output = ft_strcat(ssl->output, print);
 		ft_strdel(&print);
 	}
 	i = 0;
@@ -98,7 +100,7 @@ void	print_md5(t_md5 *md5, t_ssl *ssl)
 	while (4 > i++)
 	{
 		print = ft_itoa_base(str[i], 16);
-		ssl->output = ft_strjoin(ssl->output, print);
+		ssl->output = ft_strcat(ssl->output, print);
 		ft_strdel(&print);
 	}
 	print_md5_2(md5, ssl);
@@ -111,7 +113,7 @@ void	ft_md5(t_ssl *ssl)
 	t_md5		*md5;
 
 	move = 0;
-	if (!(md5 = init_md5()))
+	if (!(md5 = init_md5(ssl)))
 		return ;
 	while (ssl->input_len > move)
 	{

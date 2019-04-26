@@ -16,24 +16,23 @@ t_ssl	init_struct(int algo)
 {
 	t_ssl	*ssl;
 
-	ssl = (t_ssl *)malloc(sizeof(t_ssl));
-	ssl->f_str = 0;
-	ssl->f_p = 0;
-	ssl->f_q = 0;
-	ssl->f_r = 0;
-	ssl->f_s = 0;
+	if (!(ssl = (t_ssl *)malloc(sizeof(t_ssl))))
+	{
+		error(2, "Malloc error. Sustem dom't give memory");
+		return (NULL);
+	}
+	ft_bzero(ssl, sizeof(t_ssl));
 	ssl->l = 1;
 	ssl->input = NULL;
-	ssl->output = NULL;
 	if (algo == 1)
 	{
 		ssl->algo_name = "MD5";
-		ssl->wich_algo = &ft_md5;
+		ssl->run_algo = &ft_md5;
 	}
 	else if (algo == 2)
 	{
 		ssl->algo_name = "SHA256";
-		ssl->wich_algo = &ft_sha256;
+		ssl->run_algo = &ft_sha256;
 	}
 	return (ssl);
 }
@@ -62,6 +61,7 @@ int		find_algo(char *str)
 ** 1 - print usage and exit
 ** 2 - error, print mesage and exit
 ** 3 - warning, print mesage, continue
+** 4 - error, print mesage exit
 */
 
 int		error(int error_code, char *msg)
@@ -105,7 +105,7 @@ int		main(int argc, char **argv)
 		return (error(1, NULL));
 	}
 	
-	ft_putstr(ssl->output);
+	// ft_putstr(ssl->output);
 	if (ssl)
 		free(ssl);
 	return (0);

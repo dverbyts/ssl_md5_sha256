@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ssl.h"
+
 void init_buf_state(struct buffer_state *state, const void * input, size_t len)
 {
 	state->p = input;
@@ -50,35 +52,32 @@ int string_test(const char input[], const char output[])
 
 
 
-
-t_md5	init_md5(void)
+t_sha256	*init_sha256(t_ssl *ssl)
 {
-	t_md5 *md5;
+	t_sha256	*sha256;
 
-	if (!(md5 = (t_md5 *)malloc(sizeof(t_md5))))
+	if (!(sha256 = (sha256 *)malloc(sizeof(sha256))))
 	{
 		error(2, "Malloc error. Sustem dom't give memory");
 		return (NULL);
 	}
-	md5->a = 0x67452301;
-	md5->b = 0xefcdab89;
-	md5->c = 0x98badcfe;
-	md5->d = 0x10325476;
-	md5->aa = 0;
-	md5->bb = 0;
-	md5->cc = 0;
-	md5->dd = 0;
+	ft_bzero(sha256, sizeof(sha256));
+	ssl->input_len = ft_strlen(ssl->input);
+	return (sha256);
 }
+
 
 void	ft_sha256(t_ssl *ssl)
 {
 	uint32_t	buf;
 	int			move;
-	t_md5		*md5;
+	t_sha256	*sha256;
 
 	move = 0;
-	if (!(md5 = init_md5()))
+	if (!(sha256 = init_256(ssl)))
 		return ;
+
+
 	while (ssl->input_len > move)
 	{
 		buf = (uint32_t *)(ssl->input + move);

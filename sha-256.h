@@ -13,7 +13,14 @@
 #define CHUNK_SIZE 64
 #define TOTAL_LEN_LEN 8
 
-static const uint32_t g_k[] = {
+#define S0(x)  (RR((x), 2) ^ RR((x),13) ^ RR((x),22))
+#define S1(x)  (RR((x), 6) ^ RR((x),11) ^ RR((x),25))
+#define G0(x)  (RR((x), 7) ^ RR((x),18) ^ ((x) >> 3))
+#define G1(x)  (RR((x),17) ^ RR((x),19) ^ ((x) >> 10))
+
+
+
+static uint32_t g_k[] = {
 		0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
 		0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
 		0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,	0xe49b69c1, 0xefbe4786,
@@ -27,50 +34,12 @@ static const uint32_t g_k[] = {
 		0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
 
 /* g_h[0] - g_h[7] */
-uint32_t g_h[] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f,
-		0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
+static uint32_t g_h[] = {
+		0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
+		0x1f83d9ab, 0x5be0cd19 };
 
-struct buffer_state {
-	const uint8_t * p;
-	size_t len;
-	size_t total_len;
-	int single_one_delivered; /* bool */
-	int total_len_delivered; /* bool */
-};
 
-struct string_vector {
-	char *input;
-	char *output;
-};
 
-static const struct string_vector STRING_VECTORS[] = {
-	{
-		"",
-		"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-	},
-	{
-		"abc",
-		"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
-	},
-	{
-		"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-		"a8ae6e6ee929abea3afcfc5258c8ccd6f85273e0d4626d26c7279f3250f77c8e"
-	},
-	{
-		"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde",
-		"057ee79ece0b9a849552ab8d3c335fe9a5f1c46ef5f1d9b190c295728628299c"
-	},
-	{
-		"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0",
-		"2a6ad82f3620d3ebe9d678c812ae12312699d673240d5be8fac0910a70000d93"
-	},
-	{
-		"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
-		"248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"
-	},
-	{
-		"abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno"
-		"ijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu",
-		"cf5b16a778af8380036ce59e7b0492370b249b11e8f07a51afac45037afee9d1"
-	}
-};
+
+
+

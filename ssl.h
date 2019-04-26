@@ -33,12 +33,13 @@ typedef	struct	s_ssl
 	int		f_q;
 	int		f_r;
 	int		f_s;
-	int		input_len;
+	size_t	input_len;
 	int		l;
-	void	(*wich_algo)(t_ssl *ssl);
+	void	(*run_algo)(t_ssl *ssl);
 	char	*algo_name;
+	char	*file_name;
 	char	*input;
-	char	*output;
+	char	output[2000];
 
 
 	void	*ssl_struct;
