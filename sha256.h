@@ -23,7 +23,7 @@
 #define G1(x)  (RR((x),17) ^ RR((x),19) ^ ((x) >> 10))
 
 
-
+/* g_k[0] - g_k[63] */
 static uint32_t g_k[] = {
 		0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
 		0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -42,6 +42,28 @@ static uint32_t g_h[] = {
 		0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
 		0x1f83d9ab, 0x5be0cd19 };
 
+typedef	struct		s_sha256
+{
+	// uint32_t		a;
+	// uint32_t		b;
+	// uint32_t		c;
+	// uint32_t		d;
+	// uint32_t		aa;
+	// uint32_t		bb;
+	// uint32_t		cc;
+	// uint32_t		dd;
+	// unsigned char	*input;
+	uint8_t			hash[32];
+	char			hash_string[65];
+	uint8_t			chunk[64];
+	int				i;
+	int				j;
+	uint8_t			*p;
+	size_t			len;
+	size_t			total_len;
+	int				single_one_delivered; /* bool */
+	int				total_len_delivered; /* bool */
+}					t_sha256;
 
 #endif
 

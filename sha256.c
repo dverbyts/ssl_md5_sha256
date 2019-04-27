@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sha-256.c                                          :+:      :+:    :+:   */
+/*   sha256.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dverbyts <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,90 +12,61 @@
 
 #include "ssl.h"
 
-void init_buf_state(struct buffer_state *state, const void * input, size_t len)
-{
-	state->p = input;
-	state->len = len;
-	state->total_len = len;
-	state->single_one_delivered = 0;
-	state->total_len_delivered = 0;
-}
-
-void calc_sha_256(uint8_t hash[32], const char *input, size_t len)
-{
-	uint8_t chunk[64];
-	struct buffer_state state;
-
-	init_buf_state(&state, input, len);
-}
-
-int string_test(const char input[], const char output[])
-{
-	uint8_t hash[32];
-	char hash_string[65];
-
-	calc_sha_256(hash, input, ft_strlen(input));
-
-
-
-	hash_to_string(hash_string, hash);
-	printf("input: %s\n", input);
-	printf("hash : %s\n", hash_string);
-	if (strcmp(output, hash_string)) {
-		printf("FAILURE!\n\n");
-		return 1;
-	} else {
-		printf("SUCCESS!\n\n");
-		return 0;
-	}		
-}
-
-
-
 t_sha256	*init_sha256(t_ssl *ssl)
 {
-	t_sha256	*sha256;
+	t_sha256	*sha;
 
-	if (!(sha256 = (sha256 *)malloc(sizeof(sha256))))
+	if (!(sha = (t_sha256 *)malloc(sizeof(t_sha256))))
 	{
 		ft_error(2, "Malloc error. Sustem dom't give memory");
 		return (NULL);
 	}
-	ft_bzero(sha256, sizeof(sha256));
-	ssl->input_len = ft_strlen(ssl->input);
-	return (sha256);
+	ft_bzero(sha, sizeof(t_sha256));
+	sha->len = ft_strlen(ssl->input);
+	ssl->input_len = (sha->len * 8 + 1);
+	while (ssl->input_len % 512 != 448)
+		ssl->input_len++;
+	ssl->input_len = ssl->input_len / 8;
+	sha->p = (unsigned char *)ft_strnew(ssl->input_len + 64);
+	ft_memcpy(sha->p, ssl->input, sha->len);
+	sha->p[sha->len] = 128;
+	sha->len *= 8;
+	ft_memcpy(&sha->p[ssl->input_len], &sha->len, 4);
+	sha->len = ft_strlen(ssl->input);
+	return (sha);
+}
+void	calc_chunk(t_sha256 *sha)
+{
+	size_t space_in_chunk;
+
+	if (sha->total_len_delivered)
+		return (0);
+	if (sha->len >= CHUNK_SIZE)
+	{
+		ft_memcpy(sha->chunk, sha)
+	}
 }
 
 
 void	ft_sha256(void *in)
 {
-	uint32_t	buf;
-	int			move;
-	t_sha256	*sha256;
+	t_sha256	*sha;
 	t_ssl		*ssl;
 
 	ssl = (t_ssl *)in;
-	move = 0;
-	if (!(sha256 = init_256(ssl)))
+	if (!(sha = init_sha(ssl)))
 		return ;
-
-
-	while (ssl->input_len > move)
+	while (calc_chunk(sha)) //(uint8_t chunk[64], struct buffer_state state)
 	{
-		buf = (uint32_t *)(ssl->input + move);
-		md5->aa = md5->a;
-		md5->bb = md5->b;
-		md5->cc = md5->c;
-		md5->dd = md5->d;
-		do_algo(buf, md5, 0, 0);
-		md5->a += md5->aa;
-		md5->b += md5->bb;
-		md5->c += md5->cc;
-		md5->d += md5->dd;
-		move += 64;
+
 	}
-	print_md5(md5, ssl);
-	if (md5)
-		free(md5);
-	return ;
+
+
+
+	print_sha(sha, ssl);
+	free(sha);
 }
+
+
+
+
