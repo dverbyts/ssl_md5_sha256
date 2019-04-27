@@ -16,13 +16,13 @@ t_ssl	*init_struct(int algo)
 {
 	t_ssl	*ssl;
 
-	if (!(ssl = (t_ssl *)malloc(sizeof(t_ssl) + 2001)))
+	if (!(ssl = (t_ssl *)malloc(sizeof(t_ssl) + (sizeof(char) * 2001))))
 	{
 		ft_error(2, "Malloc error. Sustem dom't give memory");
 		return (NULL);
 	}
-	ft_bzero(ssl, sizeof(t_ssl));
-	ssl->output = (char *)(&ssl + sizeof(t_ssl));
+	ft_bzero(ssl, (sizeof(t_ssl) + (sizeof(char) * 2001)));
+	ssl->output = (char *)(&ssl[sizeof(t_ssl)]);
 	ssl->l = 1;
 	ssl->input = NULL;
 	if (algo == 1)
@@ -70,7 +70,8 @@ int		ft_error(int ft_error_code, char *msg)
 	if (ft_error_code == 1)
 		ft_putstr("\nUsage: ssl [md5 sha256 ...] [-p ...] [string]\n-p\
 			- echo STDIN to STDOUT and append the checksum to STDOUT\n-q\
-			- quiet mode\n-r - reverse the format of the output\n-s\
+			- quiet mode\n-r\
+			- reverse the format of the output\n-s\
 			- print the sum of the given string\n");
 	else if (ft_error_code == 2)
 	{
@@ -89,24 +90,23 @@ int		ft_error(int ft_error_code, char *msg)
 
 int		main(int argc, char **argv)
 {
-    int algo;
-    t_ssl *ssl;
+	int		algo;
+	t_ssl	*ssl;
 
-    if (argc < 2)
-        return (ft_error(1, NULL));
-    algo = find_algo(argv[1]);
-    if (algo == 0)
-        return (ft_error(1, NULL));
-    ssl = init_struct(algo);
-    if (parsing_input(argc, argv, ssl) != 0)
-    {
-        if (ssl)
-            free(ssl);
-        return (ft_error(1, NULL));
-    }
-
-    // ft_putstr(ssl->output);
-    if (ssl)
-        free(ssl);
-    return (0);
+	if (argc < 2)
+		return (ft_error(1, NULL));
+	algo = find_algo(argv[1]);
+	if (algo == 0)
+		return (ft_error(1, NULL));
+	ssl = init_struct(algo);
+	if (parsing_input(argc, argv, ssl) != 0)
+	{
+		if (ssl)
+			free(ssl);
+		return (ft_error(1, NULL));
+	}
+	ft_putstr(ssl->output);
+	if (ssl)
+		free(ssl);
+	return (0);
 }

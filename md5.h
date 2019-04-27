@@ -26,7 +26,7 @@
 
 static const uint32_t	g_num_md5[] =
 {
-	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12,	17, 22,
+	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
 	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
 	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
@@ -52,16 +52,17 @@ static const uint32_t g_k_md5[] =
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-typedef	struct	s_md5
+typedef	struct		s_md5
 {
-	uint32_t	a;
-	uint32_t	b;
-	uint32_t	c;
-	uint32_t	d;
-	uint32_t	aa;
-	uint32_t	bb;
-	uint32_t	cc;
-	uint32_t	dd;
-}				t_md5;
+	uint32_t		a;
+	uint32_t		b;
+	uint32_t		c;
+	uint32_t		d;
+	uint32_t		aa;
+	uint32_t		bb;
+	uint32_t		cc;
+	uint32_t		dd;
+	unsigned char	*input;
+}					t_md5;
 
 #endif

@@ -14,7 +14,8 @@
 
 t_md5	*init_md5(t_ssl *ssl)
 {
-	t_md5 *md5;
+	t_md5	*md5;
+	size_t	i;
 
 	if (!(md5 = (t_md5 *)malloc(sizeof(t_md5))))
 	{
@@ -22,7 +23,8 @@ t_md5	*init_md5(t_ssl *ssl)
 		return (NULL);
 	}
 	ft_bzero(md5, sizeof(t_md5));
-	ssl->input_len = (ft_strlen(ssl->input) * 8 + 1);
+	i = ft_strlen(ssl->input);
+	ssl->input_len = (i * 8 + 1);
 	while (ssl->input_len % 512 != 448)
 		ssl->input_len++;
 	ssl->input_len = ssl->input_len / 8;
@@ -30,6 +32,11 @@ t_md5	*init_md5(t_ssl *ssl)
 	md5->b = 0xefcdab89;
 	md5->c = 0x98badcfe;
 	md5->d = 0x10325476;
+	md5->input = (unsigned char *)ft_strnew(ssl->input_len + 64);
+	ft_memcpy(md5->input, ssl->input, ft_strlen(ssl->input));
+	md5->input[i] = 128;
+	i *= 8;
+	ft_memcpy(&md5->input[ssl->input_len], &i, 4);
 	return (md5);
 }
 
@@ -63,17 +70,17 @@ void	print_md5_2(t_md5 *md5, t_ssl *ssl)
 	char			*print;
 	int				i;
 
-	i = 0;
+	i = -1;
 	str = (unsigned char *)&md5->c;
-	while (4 > i++)
+	while (3 > i++)
 	{
 		print = ft_itoa_base(str[i], 16);
 		ssl->output = ft_strcat(ssl->output, print);
 		ft_strdel(&print);
 	}
-	i = 0;
+	i = -1;
 	str = (unsigned char *)&md5->d;
-	while (4 > i++)
+	while (3 > i++)
 	{
 		print = ft_itoa_base(str[i], 16);
 		ssl->output = ft_strcat(ssl->output, print);
@@ -87,17 +94,17 @@ void	print_md5(t_md5 *md5, t_ssl *ssl)
 	char			*print;
 	int				i;
 
-	i = 0;
-	str = (unsigned char *)&md5->a;
-	while (4 > i++)
+	i = -1;
+	str = (unsigned char *)&(md5->a);
+	while (3 > i++)
 	{
 		print = ft_itoa_base(str[i], 16);
 		ssl->output = ft_strcat(ssl->output, print);
 		ft_strdel(&print);
 	}
-	i = 0;
+	i = -1;
 	str = (unsigned char *)&md5->b;
-	while (4 > i++)
+	while (3 > i++)
 	{
 		print = ft_itoa_base(str[i], 16);
 		ssl->output = ft_strcat(ssl->output, print);
@@ -119,7 +126,7 @@ void	ft_md5(void *in)
 		return ;
 	while (ssl->input_len > move)
 	{
-		buf = (uint32_t *)(ssl->input + move);
+		buf = (uint32_t *)(md5->input + move);
 		md5->aa = md5->a;
 		md5->bb = md5->b;
 		md5->cc = md5->c;
@@ -132,6 +139,5 @@ void	ft_md5(void *in)
 		move += 64;
 	}
 	print_md5(md5, ssl);
-	if (md5)
-		free(md5);
+	free(md5);
 }

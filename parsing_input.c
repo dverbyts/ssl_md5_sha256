@@ -54,16 +54,16 @@ void	parsing_flag(t_ssl *ssl, int argc, char **argv, int i)
 {
 	while (argv[ssl->l][++i])
 	{
-		if (ft_strcmp(&argv[ssl->l][i], "p") == 0)
+		if (argv[ssl->l][i] == 'p')
 			(ssl->f_p == 1) ? (ft_error(3, argv[ssl->l])) : (ssl->f_p = 1);
-		else if (ft_strcmp(&argv[ssl->l][i], "q") == 0)
+		else if (argv[ssl->l][i] == 'q')
 			(ssl->f_q == 1) ? (ft_error(3, argv[ssl->l])) : (ssl->f_q = 1);
-		else if (ft_strcmp(&argv[ssl->l][i], "r") == 0)
+		else if (argv[ssl->l][i] == 'r')
 			(ssl->f_r == 1) ? (ft_error(3, argv[ssl->l])) : (ssl->f_r = 1);
-		else if (ft_strcmp(&argv[ssl->l][i], "s") == 0)
+		else if (argv[ssl->l][i] == 's')
 		{
 			(ssl->f_s == 1) ? (ft_error(3, argv[ssl->l])) : (ssl->f_s = 1);
-			if (ft_strcmp(&argv[ssl->l][i + 1], "\0") == 0)
+			if (argv[ssl->l][i + 1] == '\0')
 				(ssl->l < (argc - 1)) ? (ssl->input = argv[++ssl->l]) :
 				(ssl->input = "");
 			else
@@ -80,7 +80,7 @@ int		parsing_input(int argc, char **argv, t_ssl *ssl)
 {
 	while (++ssl->l < argc)
 	{
-		if (ft_strcmp(&argv[ssl->l][0], "-") == 0)
+		if (argv[ssl->l][0] == '-')
 			parsing_flag(ssl, argc, argv, 0);
 		else if (ssl->f_s == 1)
 		{
@@ -99,8 +99,7 @@ int		parsing_input(int argc, char **argv, t_ssl *ssl)
 //			if (ssl->f_r == 1)
 //				print_algo_name(ssl);
 			ssl->f_str = 0;
-		}	
+		}
 	}
 	return (0);
 }
-
