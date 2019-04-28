@@ -13,8 +13,6 @@
 #ifndef MD5_H
 # define MD5_H
 
-# include <stdint.h>
-# include "libft/libft.h"
 # include "ssl.h"
 
 # define F(X, Y, Z) 			((X) & (Y)) | (~(X) & (Z))

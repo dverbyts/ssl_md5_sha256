@@ -136,7 +136,7 @@ void	ft_md5(void *in)
 		md5->b += md5->bb;
 		md5->c += md5->cc;
 		md5->d += md5->dd;
-		move += 64;
+		move += CHUNK_SIZE;
 	}
 	print_md5(md5, ssl);
 	free(md5);

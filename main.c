@@ -30,11 +30,11 @@ t_ssl	*init_struct(int algo)
 		ssl->algo_name = "MD5";
 		ssl->run_algo = &ft_md5;
 	}
-//	else if (algo == 2)
-//	{
-//		ssl->algo_name = "SHA256";
-//		ssl->run_algo = &ft_sha256;
-//	}
+	else if (algo == 2)
+	{
+		ssl->algo_name = "SHA256";
+		ssl->run_algo = &ft_sha256;
+	}
 	return (ssl);
 }
 

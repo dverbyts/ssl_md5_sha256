@@ -15,7 +15,7 @@
 # include <fcntl.h>
 # include <stdint.h>
 # include "libft/libft.h"
-//# include "sha256.h"
+# include "sha256.h"
 # include "md5.h"
 
 /*
