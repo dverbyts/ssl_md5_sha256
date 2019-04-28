@@ -29,15 +29,16 @@ void	parsing_read_file(int fd, t_ssl *ssl)
 
 int		parsing_open_file(int argc, char **argv, t_ssl *ssl, int fd)
 {
-	if (ssl->l == (argc - 1))
-	{
-		ssl->input = "";
-		ssl->f_str = 1;
-		return (0);
-	}
-	if ((fd = open(argv[ssl->l], O_RDONLY)) < 0)
-		return (ft_error(2, "File name error. Can't find file."));
-	if (fd > 0)
+	// if (ssl->l == (argc - 1))
+	// {
+	// 	ssl->input = "";
+	// 	ssl->f_str = 1;
+	// 	return (0);
+	// }
+	if ((fd = open(argv[ssl->l], O_RDONLY)) > 0)
+	// if ((fd = open(argv[ssl->l], O_RDONLY)) < 0)
+	// 	return (ft_error(2, "File name error. Can't find file."));
+	// if (fd > 0)
 	{
 		parsing_read_file(fd, ssl);
 		ssl->file_name = argv[ssl->l];

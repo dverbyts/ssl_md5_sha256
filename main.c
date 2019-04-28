@@ -93,7 +93,7 @@ int		main(int argc, char **argv)
 	int		algo;
 	t_ssl	*ssl;
 
-	if (argc < 2)
+	if (argc < 3)
 		return (ft_error(1, NULL));
 	algo = find_algo(argv[1]);
 	if (algo == 0)
