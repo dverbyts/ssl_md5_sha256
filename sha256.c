@@ -11,19 +11,33 @@
 /* ************************************************************************** */
 
 #include "ssl.h"
+#include "sha256.h"
 
-void	insert_size(uint8_t chunk[8], size_t len)
+void		do_algo_sha256_3(int i, t_sha256 *sha, uint8_t chunk[8], size_t len)
 {
-	int i;
-
-	i = 6;
-	chunk[7] = (uint8_t) (len << 3);
-	len >>= 5;
-	while(i >=0)
+	if (i > 0)
 	{
-		chunk[i] = (uint8_t)len;
-		len >>= 8;
-		i--;
+		chunk[7] = (uint8_t)(len << 3);
+		len >>= 5;
+		while (i >= 0)
+		{
+			chunk[i] = (uint8_t)len;
+			len >>= 8;
+			i--;
+		}
+		return ;
+	}
+	sha->i = -1;
+	while (sha->i++ < 7)
+		sha->h[sha->i] += sha->ah[sha->i];
+	sha->i = -1;
+	sha->j = 0;
+	while (sha->i++ < 7)
+	{
+		sha->hash[sha->j++] = (uint8_t)(sha->h[sha->i] >> 24);
+		sha->hash[sha->j++] = (uint8_t)(sha->h[sha->i] >> 16);
+		sha->hash[sha->j++] = (uint8_t)(sha->h[sha->i] >> 8);
+		sha->hash[sha->j++] = (uint8_t)sha->h[sha->i];
 	}
 }
 
@@ -47,33 +61,17 @@ t_sha256	*init_sha256(t_ssl *ssl)
 	sha->p[sha->len] = 128;
 	sha->len *= 8;
 	sha->len = ft_strlen(ssl->input);
-	insert_size(&sha->p[ssl->input_len], sha->len);
+	do_algo_sha256_3(6, NULL, &sha->p[ssl->input_len], sha->len);
 	sha->i = -1;
 	while (++sha->i < 8)
 		sha->h[sha->i] = g_h[sha->i];
 	return (sha);
 }
 
-void	do_algo_sha256_3(t_sha256 *sha)
+void		do_algo_sha256_2(t_sha256 *sha)
 {
 	sha->i = -1;
-	while (sha->i++ < 7)
-		sha->h[sha->i] += sha->ah[sha->i];
-	sha->i = -1;
-	sha->j = 0;
-	while (sha->i++ < 7)
-	{
-		sha->hash[sha->j++] = (uint8_t) (sha->h[sha->i] >> 24);
-		sha->hash[sha->j++] = (uint8_t) (sha->h[sha->i] >> 16);
-		sha->hash[sha->j++] = (uint8_t) (sha->h[sha->i] >> 8);
-		sha->hash[sha->j++] = (uint8_t) sha->h[sha->i];
-	}
-}
-
-void	do_algo_sha256_2(t_sha256 *sha)
-{
-	sha->i = -1;
-	while(sha->i++ < 63)
+	while (sha->i++ < 63)
 	{
 		sha->s1 = ROTATE_R(sha->ah[4], 6) ^ ROTATE_R(sha->ah[4], 11) ^
 		ROTATE_R(sha->ah[4], 25);
@@ -94,21 +92,21 @@ void	do_algo_sha256_2(t_sha256 *sha)
 		sha->ah[1] = sha->ah[0];
 		sha->ah[0] = sha->temp1 + sha->temp2;
 	}
-	do_algo_sha256_3(sha);
+	do_algo_sha256_3(0, sha, 0, 0);
 }
 
-void	do_algo_sha256(t_sha256 *sha)
+void		do_algo_sha256(t_sha256 *sha)
 {
 	sha->i = -1;
 	while (++sha->i < 16)
 	{
-		sha->w[sha->i] = (uint32_t) sha->p[0] << 24 |
-		(uint32_t) sha->p[1] << 16 | (uint32_t) sha->p[2] << 8 |
-		(uint32_t) sha->p[3];
+		sha->w[sha->i] = (uint32_t)sha->p[0] << 24 |
+		(uint32_t)sha->p[1] << 16 | (uint32_t)sha->p[2] << 8 |
+		(uint32_t)sha->p[3];
 		sha->p += 4;
 	}
-    sha->i = 15;
-	while(++sha->i < 64)
+	sha->i = 15;
+	while (++sha->i < 64)
 	{
 		sha->s0 = ROTATE_R(sha->w[sha->i - 15], 7) ^
 		ROTATE_R(sha->w[sha->i - 15], 18) ^ (sha->w[sha->i - 15] >> 3);
@@ -118,28 +116,12 @@ void	do_algo_sha256(t_sha256 *sha)
 		sha->s1;
 	}
 	sha->i = -1;
-	while(++sha->i < 8)
+	while (++sha->i < 8)
 		sha->ah[sha->i] = sha->h[sha->i];
 	do_algo_sha256_2(sha);
 }
 
-void	print_sha(t_sha256 *sha, t_ssl *ssl)
-{
-	unsigned char	str[32];
-	char			*print;
-	int				i;
-
-	i = -1;
-	ft_memcpy(str, sha->hash, 32);
-	while (++i < 32)
-	{
-		print = ft_itoa_base(str[i], 16);
-		ssl->output = ft_strcat(ssl->output, print);
-		ft_strdel(&print);
-	}
-}
-
-void	ft_sha256(void *in)
+void		ft_sha256(void *in)
 {
 	t_sha256	*sha;
 	t_ssl		*ssl;
@@ -154,13 +136,15 @@ void	ft_sha256(void *in)
 		sha->p += i;
 		ft_memset(sha->w, 0x00, CHUNK_SIZE);
 		do_algo_sha256(sha);
-
 		i += CHUNK_SIZE;
 	}
-	print_sha(sha, ssl);
+	i = -1;
+	ft_memcpy(sha->str, sha->hash, 32);
+	while (++i < 32)
+	{
+		sha->print = ft_itoa_base(sha->str[i], 16);
+		ssl->output = ft_strcat(ssl->output, sha->print);
+		ft_strdel(&sha->print);
+	}
 	free(sha);
 }
-
-
-
-

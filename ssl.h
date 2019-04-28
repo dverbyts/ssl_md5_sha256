@@ -29,23 +29,23 @@
 
 typedef	struct	s_ssl
 {
-	int		f_str;
-	int		f_p;
-	int		f_q;
-	int		f_r;
-	int		f_s;
-	size_t	input_len;
-	int		l;
-	void	(*run_algo)(void *ssl);
-	char	*algo_name;
-	char	*file_name;
-	char	*input;
-	char	*output;
+	int			f_str;
+	int			f_p;
+	int			f_q;
+	int			f_r;
+	int			f_s;
+	size_t		input_len;
+	int			l;
+	void		(*run_algo)(void *ssl);
+	char		*algo_name;
+	char		*file_name;
+	char		*input;
+	char		*output;
 }				t_ssl;
 
-int		parsing_input(int argc, char **argv, t_ssl *ssl);
-void	ft_md5(void *in);
-void	ft_sha256(void *in);
-int		ft_error(int ft_error_code, char *msg);
+int				parsing_input(int argc, char **argv, t_ssl *ssl);
+void			ft_md5(void *in);
+void			ft_sha256(void *in);
+int				ft_error(int ft_error_code, char *msg);
 
 #endif
