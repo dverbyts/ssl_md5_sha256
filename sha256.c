@@ -47,7 +47,7 @@ t_sha256	*init_sha256(t_ssl *ssl)
 
 	if (!(sha = (t_sha256 *)malloc(sizeof(t_sha256))))
 	{
-		ft_error(2, "Malloc error. Sustem dom't give memory");
+		ft_er(2, "Malloc error. Sustem dom't give memory");
 		return (NULL);
 	}
 	ft_bzero(sha, sizeof(t_sha256));
@@ -59,7 +59,6 @@ t_sha256	*init_sha256(t_ssl *ssl)
 	sha->p = (uint8_t *)ft_strnew(ssl->input_len + 64);
 	ft_memcpy(sha->p, ssl->input, sha->len);
 	sha->p[sha->len] = 128;
-	sha->len *= 8;
 	sha->len = ft_strlen(ssl->input);
 	do_algo_sha256_3(6, NULL, &sha->p[ssl->input_len], sha->len);
 	sha->i = -1;
@@ -133,10 +132,10 @@ void		ft_sha256(void *in)
 	i = 0;
 	while (i < ssl->input_len)
 	{
-		sha->p += i;
 		ft_memset(sha->w, 0x00, CHUNK_SIZE);
 		do_algo_sha256(sha);
 		i += CHUNK_SIZE;
+//        sha->p += CHUNK_SIZE;
 	}
 	i = -1;
 	ft_memcpy(sha->str, sha->hash, 32);

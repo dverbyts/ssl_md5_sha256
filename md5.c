@@ -19,7 +19,7 @@ t_md5	*init_md5(t_ssl *ssl)
 
 	if (!(md5 = (t_md5 *)malloc(sizeof(t_md5))))
 	{
-		ft_error(2, "Malloc error. Sustem dom't give memory");
+		ft_er(2, "Malloc error. Sustem dom't give memory");
 		return (NULL);
 	}
 	ft_bzero(md5, sizeof(t_md5));
