@@ -39,13 +39,13 @@ void	parsing_read_file(int fd, t_ssl *ssl)
 	char *bbuf;
 
 	bbuf = ft_strnew(1);
-    ft_bzero(tmp, 2);
+	ft_bzero(tmp, 2);
 	while (read(fd, tmp, 1) > 0)
 	{
 		buf = bbuf;
 		bbuf = ft_strjoin(buf, tmp);
 		free(buf);
-        ft_bzero(tmp, 2);
+		ft_bzero(tmp, 2);
 	}
 	ssl->input = bbuf;
 }

@@ -135,7 +135,6 @@ void		ft_sha256(void *in)
 		ft_memset(sha->w, 0x00, CHUNK_SIZE);
 		do_algo_sha256(sha);
 		i += CHUNK_SIZE;
-//        sha->p += CHUNK_SIZE;
 	}
 	i = -1;
 	ft_memcpy(sha->str, sha->hash, 32);

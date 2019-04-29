@@ -46,7 +46,7 @@ typedef	struct	s_ssl
 	char		*output;
 }				t_ssl;
 
-void				parsing_input(int argc, char **argv, t_ssl *ssl);
+void			parsing_input(int argc, char **argv, t_ssl *ssl);
 void			ft_md5(void *in);
 void			ft_sha256(void *in);
 void			p_res(int i, t_ssl *ssl);
